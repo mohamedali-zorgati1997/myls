@@ -13,13 +13,17 @@ int main(int argc, char* argv[])
         for(i=1; i<argc; i++){
             printf("%s :\n", argv[i]);
             dir = opendir(argv[i]);
-            if (dir == 0){
+            if (dir == NULL){
                 if (errno == EACCES){
                     printf("You don't have access to directory : %s\n", argv[i] );
                 }
                 else if (errno == ENOENT) {
+                    printf("%s does not exist\n", argv[i]);
+                }
+                else if (errno == ENOTDIR) {
                     printf("%s is not a directory\n", argv[i]);
                 }
+                exit(EXIT_FAILURE);
             }
 
             while((de = readdir(dir)) != 0){
@@ -32,7 +36,8 @@ int main(int argc, char* argv[])
         dir = opendir(".");
         if (dir == 0){
             if (errno == EACCES){
-                printf("You don't have access to the current directory\n");
+                printf("You don't have access to the current directory\n", errno );
+                exit(EXIT_FAILURE);
             }
         }
         while((de = readdir(dir)) != 0){
