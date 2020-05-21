@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
         dir = opendir(".");
         if (dir == 0){
             if (errno == EACCES){
-                printf("You don't have access to the current directory\n", errno );
+                printf("You don't have access to the current directory\n");
             }
         }
         while((de = readdir(dir)) != 0){
