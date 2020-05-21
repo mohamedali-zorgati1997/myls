@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <errno.h>
+
 
 int main(int argc, char* argv[])
 {
@@ -11,6 +13,15 @@ int main(int argc, char* argv[])
         for(i=1; i<argc; i++){
             printf("%s :\n", argv[i]);
             dir = opendir(argv[i]);
+            if (dir == 0){
+                if (errno == EACCES){
+                    printf("You don't have access to directory : %s\n", argv[i] );
+                }
+                else if (errno == ENOENT) {
+                    printf("%s is not a directory\n", argv[i]);
+                }
+            }
+
             while((de = readdir(dir)) != 0){
                 printf("\t%s\n", de->d_name);
             }
@@ -19,6 +30,11 @@ int main(int argc, char* argv[])
     }
     else{
         dir = opendir(".");
+        if (dir == 0){
+            if (errno == EACCES){
+                printf("You don't have access to the current directory\n", errno );
+            }
+        }
         while((de = readdir(dir)) != 0){
             printf("%s\n", de->d_name);
         }
